@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=3 uid="uid://gfu0s6x0ss0y"]
+
+[ext_resource type="Script" path="res://addons/jam_launch/editor_plugin/ProjectSelect.gd" id="1_yrc6b"]
+[ext_resource type="PackedScene" uid="uid://d1rvdodn3tw7w" path="res://addons/jam_launch/ui/BusyCircle.tscn" id="2_eayhj"]
+
+[node name="ProjectSelect" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 24
+script = ExtResource("1_yrc6b")
+
+[node name="HTTPGetProjects" type="HTTPRequest" parent="."]
+
+[node name="VB" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TopBar" type="HBoxContainer" parent="VB"]
+layout_mode = 2
+
+[node name="NewBtn" type="Button" parent="VB/TopBar"]
+layout_mode = 2
+text = "New Project"
+
+[node name="NoProjects" type="Label" parent="VB"]
+layout_mode = 2
+text = "No projects to display..."
+
+[node name="Projects" type="ItemList" parent="VB"]
+layout_mode = 2
+auto_height = true
+
+[node name="Loading" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="BusyCircle" parent="Loading" instance=ExtResource("2_eayhj")]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+
+[node name="Text" type="Label" parent="Loading"]
+layout_mode = 2
+text = "Loading projects..."
+
+[connection signal="request_completed" from="HTTPGetProjects" to="." method="_on_http_get_projects_request_completed"]
+[connection signal="pressed" from="VB/TopBar/NewBtn" to="." method="_on_new_btn_pressed"]
+[connection signal="item_activated" from="VB/Projects" to="." method="_on_projects_item_activated"]

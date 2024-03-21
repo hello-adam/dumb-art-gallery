@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6fb1ogmeji54"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mcovx"]
+albedo_color = Color(0.866667, 0.866667, 0.866667, 1)
+emission = Color(0.278431, 0.278431, 0.278431, 1)
+emission_energy_multiplier = 1.16
+backlight = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_j125p"]
+material = SubResource("StandardMaterial3D_mcovx")
+size = Vector3(15, 0.5, 15)
+
+[node name="Ceiling" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_j125p")
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -1, 3)
+light_energy = 0.3
+omni_range = 16.0
+omni_attenuation = 0.05
+omni_shadow_mode = 0
+
+[node name="OmniLight3D4" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -1, -3)
+light_energy = 0.3
+omni_range = 16.0
+omni_attenuation = 0.05
+omni_shadow_mode = 0

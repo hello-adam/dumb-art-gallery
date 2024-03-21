@@ -1,0 +1,19 @@
+{
+    "name": "painting-create",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.133",
+        "@types/node": "^20.11.13"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.503.1",
+        "@aws-sdk/client-s3": "^3.503.1",
+        "@aws-sdk/lib-dynamodb": "^3.503.1",
+        "@aws-sdk/lib-storage": "^3.537.0",
+        "axios": "^1.6.7",
+        "short-unique-id": "^5.0.3"
+    }
+}

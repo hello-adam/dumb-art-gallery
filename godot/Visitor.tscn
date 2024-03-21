@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0dog6q008txx"]
+
+[ext_resource type="Script" path="res://Visitor.gd" id="1_5o6ds"]
+[ext_resource type="Script" path="res://addons/jam_launch/core/JamSync.gd" id="2_ao4t6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_y16xh"]
+height = 1.77
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_csino"]
+radius = 0.4
+height = 1.77
+
+[node name="Visitor" type="CharacterBody3D" groups=["visitor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+script = ExtResource("1_5o6ds")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.592075, -0.424566)
+fov = 90.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_y16xh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_csino")
+
+[node name="JamSync" type="Node" parent="."]
+script = ExtResource("2_ao4t6")
+spawn_properties = Array[String](["pid", "position", "rotation"])
+sync_properties = Array[String](["position", "total_rotation"])

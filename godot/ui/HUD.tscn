@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://c28x0i50115g7"]
+
+[ext_resource type="Script" path="res://ui/HUD.gd" id="1_s0op3"]
+[ext_resource type="PackedScene" uid="uid://c5d8u6hwivonk" path="res://addons/jam_launch/ui/pages/PageStack.tscn" id="2_237nk"]
+
+[node name="HUD" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+script = ExtResource("1_s0op3")
+
+[node name="PageStack" parent="." instance=ExtResource("2_237nk")]
+layout_mode = 2
+
+[node name="EnterPrompt" type="CenterContainer" parent="PageStack"]
+layout_mode = 2
+
+[node name="VB" type="VBoxContainer" parent="PageStack/EnterPrompt"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PageStack/EnterPrompt/VB"]
+layout_mode = 2
+text = "Enter a description for the painting:"
+
+[node name="TextEdit" type="TextEdit" parent="PageStack/EnterPrompt/VB"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+wrap_mode = 1
+
+[node name="HB" type="HBoxContainer" parent="PageStack/EnterPrompt/VB"]
+layout_mode = 2
+alignment = 2
+
+[node name="PromptCancel" type="Button" parent="PageStack/EnterPrompt/VB/HB"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Cancel"
+
+[node name="PromptSubmit" type="Button" parent="PageStack/EnterPrompt/VB/HB"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Submit
+"
+
+[node name="PaintReq" type="HTTPRequest" parent="."]
+
+[connection signal="pressed" from="PageStack/EnterPrompt/VB/HB/PromptCancel" to="." method="_on_prompt_cancel_pressed"]
+[connection signal="pressed" from="PageStack/EnterPrompt/VB/HB/PromptSubmit" to="." method="_on_prompt_submit_pressed"]
+[connection signal="request_completed" from="PaintReq" to="." method="_on_paint_req_request_completed"]

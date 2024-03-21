@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://0x2q4hm6qsc1"]
+
+[ext_resource type="Material" uid="uid://ftiavi85dpce" path="res://resources/GalleryWhite.tres" id="1_1bm3d"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_byfy1"]
+size = Vector3(16, 6, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6s2k0"]
+material = ExtResource("1_1bm3d")
+size = Vector3(16, 6, 2)
+
+[node name="LongWall" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_byfy1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_6s2k0")

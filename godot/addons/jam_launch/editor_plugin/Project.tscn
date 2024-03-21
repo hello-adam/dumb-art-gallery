@@ -1,0 +1,162 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwbbc305p213v"]
+
+[ext_resource type="Script" path="res://addons/jam_launch/editor_plugin/Project.gd" id="1_pygq4"]
+[ext_resource type="Texture2D" uid="uid://gaqcgtvl36u7" path="res://addons/jam_launch/assets/icons/cancel.svg" id="2_36hr7"]
+[ext_resource type="PackedScene" uid="uid://x8bepljs2sfy" path="res://addons/jam_launch/editor_plugin/ReleaseSummary.tscn" id="2_x4il8"]
+[ext_resource type="PackedScene" uid="uid://c3p82rkol0m5w" path="res://addons/jam_launch/ui/BusyBadge.tscn" id="3_232eu"]
+
+[sub_resource type="SystemFont" id="SystemFont_s3gwr"]
+font_names = PackedStringArray("Monospace")
+
+[node name="Project" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_bottom = 8
+script = ExtResource("1_pygq4")
+
+[node name="HB" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Config" type="VBoxContainer" parent="HB"]
+layout_mode = 2
+
+[node name="BtnDeploy" type="Button" parent="HB/Config"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Prepare Release"
+
+[node name="OptLabel" type="Label" parent="HB/Config"]
+layout_mode = 2
+text = "Release Options:"
+
+[node name="NetworkMode" type="OptionButton" parent="HB/Config"]
+layout_mode = 2
+item_count = 3
+fit_to_longest_item = false
+popup/item_0/text = "ENet"
+popup/item_0/id = 0
+popup/item_1/text = "WebSocket"
+popup/item_1/id = 1
+popup/item_2/text = "WebRTC"
+popup/item_2/id = 2
+
+[node name="PlatformOptions" type="MenuButton" parent="HB/Config"]
+layout_mode = 2
+text = "Platforms..."
+flat = false
+item_count = 5
+popup/item_0/text = "Linux"
+popup/item_0/checkable = 1
+popup/item_0/checked = true
+popup/item_0/id = 0
+popup/item_1/text = "Windows"
+popup/item_1/checkable = 1
+popup/item_1/checked = true
+popup/item_1/id = 1
+popup/item_2/text = "MacOS"
+popup/item_2/checkable = 1
+popup/item_2/checked = true
+popup/item_2/id = 2
+popup/item_3/text = "Web"
+popup/item_3/checkable = 1
+popup/item_3/id = 3
+popup/item_3/disabled = true
+popup/item_4/text = "Android"
+popup/item_4/checkable = 1
+popup/item_4/id = 4
+
+[node name="Space" type="Label" parent="HB/Config"]
+layout_mode = 2
+text = "
+"
+
+[node name="BtnSessions" type="Button" parent="HB/Config"]
+layout_mode = 2
+text = "View Sessions"
+
+[node name="BtnDelete" type="Button" parent="HB/Config"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 0.533333, 0.466667, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.866667, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.733333, 0.666667, 1)
+theme_override_colors/font_focus_color = Color(1, 0.533333, 0.466667, 1)
+theme_override_colors/icon_normal_color = Color(1, 0.533333, 0.466667, 1)
+theme_override_colors/icon_pressed_color = Color(1, 0.866667, 0.8, 1)
+theme_override_colors/icon_hover_color = Color(1, 0.733333, 0.666667, 1)
+theme_override_colors/icon_focus_color = Color(1, 0.533333, 0.466667, 1)
+text = "Delete Project"
+icon = ExtResource("2_36hr7")
+
+[node name="Releases" type="VBoxContainer" parent="HB"]
+layout_mode = 2
+
+[node name="VB" type="VBoxContainer" parent="HB/Releases"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 16
+
+[node name="PreparingBusy" type="HBoxContainer" parent="HB/Releases/VB"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BusyBadge" parent="HB/Releases/VB/PreparingBusy" instance=ExtResource("3_232eu")]
+layout_mode = 2
+padding_ratio = 0.1
+
+[node name="Label" type="Label" parent="HB/Releases/VB/PreparingBusy"]
+layout_mode = 2
+text = "Preparing next release..."
+
+[node name="NoDeployments" type="Label" parent="HB/Releases/VB"]
+visible = false
+layout_mode = 2
+text = "No active deployments..."
+
+[node name="ReleaseSummary" parent="HB/Releases/VB" instance=ExtResource("2_x4il8")]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="AutoRefreshTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="ConfirmDelete" type="ConfirmationDialog" parent="."]
+title = "Confirm Project Delete"
+initial_position = 4
+size = Vector2i(400, 135)
+ok_button_text = "Yes, Delete Project"
+dialog_text = "Are you sure you want to permanently delete this project from your account?"
+dialog_autowrap = true
+cancel_button_text = "No, Cancel"
+
+[node name="LogPopup" type="Popup" parent="."]
+title = "Build Log"
+position = Vector2i(100, 100)
+size = Vector2i(640, 480)
+unresizable = false
+borderless = false
+
+[node name="Logs" type="TextEdit" parent="LogPopup"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_s3gwr")
+theme_override_font_sizes/font_size = 10
+editable = false
+
+[connection signal="pressed" from="HB/Config/BtnDeploy" to="." method="_on_btn_deploy_pressed"]
+[connection signal="item_selected" from="HB/Config/NetworkMode" to="." method="_on_config_item_selected"]
+[connection signal="pressed" from="HB/Config/BtnSessions" to="." method="_on_btn_sessions_pressed"]
+[connection signal="pressed" from="HB/Config/BtnDelete" to="." method="_on_btn_delete_pressed"]
+[connection signal="show_logs" from="HB/Releases/VB/ReleaseSummary" to="." method="_show_logs"]
+[connection signal="update_release" from="HB/Releases/VB/ReleaseSummary" to="." method="_update_release"]
+[connection signal="timeout" from="AutoRefreshTimer" to="." method="_on_auto_refresh_timer_timeout"]
+[connection signal="confirmed" from="ConfirmDelete" to="." method="_on_confirm_delete_confirmed"]

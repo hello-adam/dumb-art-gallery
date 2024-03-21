@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://duo302gltte0g"]
+
+[sub_resource type="GDScript" id="GDScript_cegkw"]
+script/source = "extends Control
+
+var load_dots = 1
+var max_load_dots = 6
+var dot_rate = 0.2
+var _elapsed = 0.0
+
+func set_operation_text(text: String):
+	$Operation.text = text
+	
+func _process(delta):
+	if not self.visible:
+		return
+	
+	_elapsed += delta
+	if _elapsed > dot_rate:
+		while _elapsed > dot_rate:
+			load_dots = (load_dots + 1) % (max_load_dots + 1)
+			_elapsed -= dot_rate
+		
+		var dots = \"\"
+		for i in range(load_dots):
+			dots += \".\"
+		$Loading.text = dots + \"Loading\" + dots
+"
+
+[node name="LoadingSplash" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+script = SubResource("GDScript_cegkw")
+
+[node name="Operation" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Loading" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Loading"
+horizontal_alignment = 1
+vertical_alignment = 1

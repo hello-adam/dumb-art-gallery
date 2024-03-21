@@ -1,0 +1,115 @@
+[gd_scene load_steps=12 format=3 uid="uid://b1paab8hdnwxx"]
+
+[ext_resource type="Script" path="res://Painting.gd" id="1_bk22x"]
+[ext_resource type="PackedScene" uid="uid://ccn1u1ypxoxd2" path="res://lights/PaintingSpotLight.tscn" id="3_ffa1c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a8bd0"]
+size = Vector3(4, 3, 0.01)
+
+[sub_resource type="BoxMesh" id="BoxMesh_d1i8j"]
+size = Vector3(4, 3, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2s5k1"]
+resource_local_to_scene = true
+albedo_color = Color(0.866667, 0.866667, 0.8, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_koqan"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_2s5k1")
+size = Vector2(4, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_00ys4"]
+size = Vector3(4, 3, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e5ifr"]
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_uvr2k"]
+material = SubResource("StandardMaterial3D_e5ifr")
+radius = 0.1
+height = 0.2
+
+[sub_resource type="Curve" id="Curve_e8t6v"]
+min_value = -1.0
+_data = [Vector2(0.0025974, 0.805195), 0.0, 0.0, 0, 0, Vector2(1, 0.272727), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_f7lld"]
+properties/0/path = NodePath(".:painted")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:focused")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:paint_busy")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:picture_key")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+
+[node name="Painting" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("1_bk22x")
+
+[node name="Frame" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Frame"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Frame/StaticBody3D"]
+shape = SubResource("BoxShape3D_a8bd0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Frame"]
+mesh = SubResource("BoxMesh_d1i8j")
+
+[node name="Canvas" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.011)
+mesh = SubResource("QuadMesh_koqan")
+
+[node name="PictureReq" type="HTTPRequest" parent="."]
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.98631)
+shape = SubResource("BoxShape3D_00ys4")
+
+[node name="Spotlights" type="Node3D" parent="."]
+visible = false
+
+[node name="PaintingSpotLight" parent="Spotlights" instance=ExtResource("3_ffa1c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+
+[node name="PaintingSpotLight2" parent="Spotlights" instance=ExtResource("3_ffa1c")]
+
+[node name="PaintingSpotLight3" parent="Spotlights" instance=ExtResource("3_ffa1c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="Busy" type="Node3D" parent="."]
+visible = false
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="Busy"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.969813)
+amount = 20
+lifetime = 0.3
+explosiveness = 0.29
+randomness = 0.29
+mesh = SubResource("SphereMesh_uvr2k")
+emission_shape = 3
+emission_box_extents = Vector3(1.2, 1, 1)
+direction = Vector3(0, 0, -1)
+spread = 10.0
+gravity = Vector3(0, 0, -5)
+initial_velocity_min = 0.5
+initial_velocity_max = 3.0
+color = Color(0, 0.678431, 0.878431, 1)
+hue_variation_min = -0.84
+hue_variation_max = 0.77
+hue_variation_curve = SubResource("Curve_e8t6v")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_f7lld")
+
+[connection signal="request_completed" from="PictureReq" to="." method="_on_picture_req_request_completed"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]
