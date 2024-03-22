@@ -97,7 +97,7 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
             TableName: process.env.PICTURE_TABLE,
             Item: {
                 pk: `REQ-${userId}`,
-                sk: `${new Date().toUTCString()}`,
+                sk: `${new Date().toISOString()}`,
                 prompt: bodyJson.prompt,
                 url: picUrl
             }
@@ -108,7 +108,7 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
             TableName: process.env.PICTURE_TABLE,
             Item: {
                 pk: `PNT`,
-                sk: `${new Date().toUTCString()}`,
+                sk: `${new Date().toISOString()}`,
                 prompt: bodyJson.prompt,
                 url: picUrl,
                 author: userId
