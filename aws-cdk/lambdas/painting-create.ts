@@ -49,11 +49,11 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
                     {
                         "type": "dictionary",
                         "value": {
-                            "height": 768,
+                            "height": 384,
                             "num_images_per_prompt": 1,
                             "num_inference_steps": 4,
                             "strength": 0.8,
-                            "width": 1024
+                            "width": 512
                         }
                     }
                 ]
