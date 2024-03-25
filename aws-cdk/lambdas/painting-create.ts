@@ -8,6 +8,11 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 const suid = new ShortUniqueId({ length: 12 });
 
+import OpenAI from "openai";
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
+
 const baseDdb = new DynamoDBClient()
 const ddb = DynamoDBDocumentClient.from(baseDdb, {
     marshallOptions: {
@@ -16,6 +21,9 @@ const ddb = DynamoDBDocumentClient.from(baseDdb, {
 })
 
 const s3 = new S3Client()
+
+const sanitizationContext = `You are a helpful assistant that either repeats back image generation prompts, or states alternative prompts`
+const sanitizationPrompt = `if the following image generation prompt is obscene or NSFW in any way, state a benign prompt for generating a still life oil painting with vegetables and fancy hats. Only state the prompt, do not apologize or say anything else. If the prompt is not obscene or NSFW in any way, repeat the prompt back without changing it: "<THE_PROMPT>"`
 
 export const handler = async (event: APIGatewayProxyEventV2WithJWTAuthorizer): Promise<APIGatewayProxyResultV2> => {
     return await errorHandlingWrapper(createPainting(event))
@@ -36,6 +44,30 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
         throw new HttpError(400, "Missing prompt")
     }
 
+    if (bodyJson.prompt.length > 256) {
+        bodyJson.prompt = bodyJson.prompt.slice(0, 256)
+    }
+
+    let basePrompt = sanitizationPrompt.replace(/<THE_PROMPT>/, bodyJson.prompt)
+
+
+    const completion = await openai.chat.completions.create({
+        messages: [
+            {
+                role: "system",
+                content: sanitizationContext,
+            },
+            {
+                role: "user",
+                content: basePrompt
+            },
+        ],
+        model: "gpt-3.5-turbo"
+    });
+    console.log(completion.choices[0]);
+    const sanitizedPrompt = completion.choices[0].message.content
+
+
     let genResp = await axios.post(
         "https://www.mystic.ai/v4/runs",
         {
@@ -44,7 +76,7 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
                 [
                     {
                         "type": "string",
-                        "value": bodyJson.prompt
+                        "value": sanitizedPrompt
                     },
                     {
                         "type": "dictionary",
@@ -98,7 +130,7 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
             Item: {
                 pk: `REQ-${userId}`,
                 sk: `${new Date().toISOString()}`,
-                prompt: bodyJson.prompt,
+                prompt: sanitizedPrompt,
                 url: picUrl
             }
         })
@@ -109,7 +141,7 @@ export const createPainting = async (event: APIGatewayProxyEventV2WithJWTAuthori
             Item: {
                 pk: `PNT`,
                 sk: `${new Date().toISOString()}`,
-                prompt: bodyJson.prompt,
+                prompt: sanitizedPrompt,
                 url: picUrl,
                 author: userId
             }
