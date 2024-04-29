@@ -15,5 +15,3 @@ including:
 
 It uses a stable diffusion pipeline via the Mystic AI APIs in order to generate
 paintings in a gallery with your friends.
-
-This project was made as part of [Backdrop Build v3](https://backdropbuild.com/)
